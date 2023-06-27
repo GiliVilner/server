@@ -124,6 +124,29 @@ router.patch("/changeRole/:userID", authAdmin, async (req, res) => {
   }
 })
 
+//הוספת טיול מעודף למערך טיולים
+router.patch("/addTrip/:tripID", auth, async (req, res) => {
+
+
+  try {
+    let tripID = req.params.tripID;
+
+
+    // let data = await UserModel.updateOne({ _id: req.tokenData._id }, { role: req.body.role })
+    const data = await UserModel.updateOne(
+      { _id: req.tokenData._id },
+      { $push: { 'trips': tripID } },
+      { new: true }
+
+    );
+    res.json(data);
+  }
+  catch (err) {
+    console.log(err)
+    res.status(500).json({ msg: "err", err })
+  }
+})
+
 // מאפשר לגרום למשתמש לא יכולת להוסיף מוצרים חדשים/ סוג של באן שלא מוחק את המשתמש
 router.patch("/changeActive/:userID", authAdmin, async (req, res) => {
   if (!req.body.active && req.body.active != false) {

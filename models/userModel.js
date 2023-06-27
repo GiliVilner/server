@@ -1,5 +1,6 @@
 // 5
 const mongoose = require("mongoose");
+const TripModel=require("./tripModel")
 const Joi = require("joi");
 const jwt = require("jsonwebtoken");
 const {config} = require("../config/secret")
@@ -12,6 +13,8 @@ let userSchema = new mongoose.Schema({
   birth_date:Date,
   info:String,
   img_url:String,
+  trips:[mongoose.ObjectId],
+  blogs:[mongoose.ObjectId],
   date_created:{
     type:Date , default:Date.now()
   },
@@ -22,11 +25,7 @@ let userSchema = new mongoose.Schema({
   active:{
     type:Boolean, default: true,
   },
-  location:String,
-  nickname:String,
-  rank:{
-    type:Number, default:10
-  }
+
 })
 
 exports.UserModel = mongoose.model("users",userSchema);
@@ -45,8 +44,6 @@ exports.validUser = (_reqBody) => {
     birth_date:Joi.string().min(2).max(99).required(),
     info:Joi.string().min(2).max(99).required(),
     img_url:Joi.string().min(2).max(99).allow(null,""),
-    location:Joi.string().min(2).max(99).required(),
-    nickname:Joi.string().min(2).max(99).required(),
   })
 
   return joiSchema.validate(_reqBody);
